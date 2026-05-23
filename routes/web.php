@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 
 // Route untuk Guest (Belum Login)
 Route::middleware('guest')->group(function () {
@@ -20,6 +21,7 @@ Route::middleware('auth')->group(function () {
 
     // CRUD Kategori menggunakan Resource Controller agar routing efisien
     Route::resource('categories', CategoryController::class);
+    Route::resource('products', ProductController::class);
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

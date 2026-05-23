@@ -60,14 +60,20 @@
                         <i data-lucide="tags" class="w-5 h-5"></i>
                         <span class="font-medium">Kategori Produk</span>
                     </a>
+                    <!-- MENU LINK PRODUK BARU -->
+                    <a href="{{ route('products.index') }}" class="flex items-center gap-3 py-3 px-4 rounded-xl transition-all {{ request()->routeIs('products.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
+                        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                        <span class="font-medium">Produk Resmi</span>
+                    </a>
                 </nav>
             </div>
 
+            <!-- Profil Merchant (Bagian Verifikasi) -->
             <div class="mt-auto p-8 border-t border-slate-800">
                 <div class="flex items-center gap-3 p-3 bg-slate-800/50 rounded-2xl border border-slate-700/50">
                     <div class="relative">
                         <div class="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center font-bold text-white shadow-inner">
-                        {{ substr(Auth::user()->name, 0, 1) }}
+                            {{ substr(Auth::user()->name, 0, 1) }}
                         </div>
                         <div class="absolute -bottom-1 -right-1 bg-green-500 border-2 border-slate-900 w-4 h-4 rounded-full flex items-center justify-center">
                             <i data-lucide="check" class="w-2 h-2 text-white font-bold"></i>
@@ -75,7 +81,7 @@
                     </div>
                     <div class="flex-1 overflow-hidden">
                         <p class="text-sm font-bold truncate">{{ Auth::user()->name }}</p>
-                        <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-tight">Merchant</p>
+                        <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-tight">Merchant Resmi</p>
                     </div>
                 </div>
             </div>
@@ -92,7 +98,7 @@
                     </button>
                     <div class="hidden sm:block">
                         <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Panel Merchant</h2>
-                        <p class="text-sm text-slate-600 font-medium">Smart-Catalog UMKM</p>
+                        <p class="text-sm text-slate-600 font-medium italic">Manajemen Katalog Terverifikasi</p>
                     </div>
                 </div>
 
