@@ -7,12 +7,14 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+// DUA BARIS INI WAJIB ADA UNTUK FITUR EXCEL
+use App\Exports\ProductsExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class ProductController extends Controller
 {
-    
     public function index()
     {
-        // Menggunakan eager loading 'with' agar query lebih efisien dan cepat
         $products = Products::with('category')->get();
         return view('products.index', compact('products'));
     }
@@ -26,24 +28,24 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id', // Validasi relasi harus ada di tabel categories
             'nama_produk' => 'required|min:3',
-            'harga' => 'required|numeric|min:0',
-            'deskripsi' => 'required',
+            'category_id' => 'required|exists:categories,id',
+            'harga' => 'required|numeric|min:1000',
+            'deskripsi_produk' => 'required',
             'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         $imagePath = $request->file('foto')->store('produk', 'public');
 
         Products::create([
-            'category_id' => $request->category_id,
             'nama_produk' => $request->nama_produk,
+            'category_id' => $request->category_id,
             'harga' => $request->harga,
-            'deskripsi' => $request->deskripsi,
+            'deskripsi_produk' => $request->deskripsi_produk,
             'foto_produk' => $imagePath,
         ]);
 
-        return redirect()->route('products.index')->with('success', 'Produk baru berhasil ditambahkan!');
+        return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan!');
     }
 
     public function edit(Products $product)
@@ -52,28 +54,24 @@ class ProductController extends Controller
         return view('products.edit', compact('product', 'categories'));
     }
 
-    /**
-     * Memproses update data produk beserta file fotonya
-     */
     public function update(Request $request, Products $product)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
             'nama_produk' => 'required|min:3',
-            'harga' => 'required|numeric|min:0',
-            'deskripsi' => 'required',
+            'category_id' => 'required|exists:categories,id',
+            'harga' => 'required|numeric|min:1000',
+            'deskripsi_produk' => 'required',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         $data = [
-            'category_id' => $request->category_id,
             'nama_produk' => $request->nama_produk,
+            'category_id' => $request->category_id,
             'harga' => $request->harga,
-            'deskripsi' => $request->deskripsi,
+            'deskripsi_produk' => $request->deskripsi_produk,
         ];
 
         if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
             if ($product->foto_produk && Storage::disk('public')->exists($product->foto_produk)) {
                 Storage::disk('public')->delete($product->foto_produk);
             }
@@ -90,8 +88,17 @@ class ProductController extends Controller
         if ($product->foto_produk && Storage::disk('public')->exists($product->foto_produk)) {
             Storage::disk('public')->delete($product->foto_produk);
         }
-        
+
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus.');
+    }
+
+    /**
+     * FUNGSI INI YANG SEBELUMNYA HILANG/TIDAK TERBACA
+     * Letakkan ini sebelum tanda kurung kurawal penutup terakhir "}"
+     */
+    public function exportExcel()
+    {
+        return Excel::download(new ProductsExport, 'laporan-katalog-umkm.xlsx');
     }
 }

@@ -11,6 +11,10 @@
             <i data-lucide="plus" class="w-5 h-5 group-hover:rotate-90 transition-transform"></i>
             Tambah Produk
         </a>
+        <a href="{{ route('products.export') }}" class="group bg-emerald-600 text-white px-6 py-3.5 rounded-2xl font-bold hover:bg-emerald-700 transition-all flex items-center gap-2 shadow-lg shadow-emerald-600/20">
+            <i data-lucide="file-text" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+            Export Excel
+        </a>
     </div>
 
     @if(session('success'))

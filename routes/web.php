@@ -13,16 +13,26 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-// Route untuk Merchant (Sudah Login) - Proteksi Middleware
+// Route untuk Merchant Resmi (Sudah Login)
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 
-    // CRUD Kategori menggunakan Resource Controller agar routing efisien
-    Route::resource('categories', CategoryController::class);
-    Route::resource('products', ProductController::class);
+    /**
+     * SANGAT PENTING (SOLUSI ERROR):
+     * Letakkan route '/products/export/excel' di ATAS Route::resource('products').
+     * Jika ditaruh di bawah, kata 'export' akan dianggap sebagai ID produk oleh Laravel 
+     * dan akan memicu error "Call to undefined method ProductController::show()".
+     */
+    Route::get('/products/export/excel', [ProductController::class, 'exportExcel'])->name('products.export');
 
+    // Route Resource CRUD Kategori
+    Route::resource('categories', CategoryController::class);
+
+    // Route Resource CRUD Produk - Kita batasi agar tidak mendaftarkan rute 'show' jika memang tidak dipakai
+    Route::resource('products', ProductController::class)->except(['show']);
+    
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
@@ -30,7 +40,3 @@ Route::middleware('auth')->group(function () {
 Route::get('/', function () {
     return redirect()->route('login');
 });
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
